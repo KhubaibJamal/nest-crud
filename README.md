@@ -35,11 +35,11 @@ Use **Authorize** in Swagger UI and paste an `access_token` from `/auth/login` o
 
 ## Reset password page
 
-After calling `POST /auth/forgot-password`, open the link from the server log (or `reset_token` in the response):
+After calling `POST /auth/forgot-password`, the user receives an email with a link like:
 
-**[http://localhost:3000/reset-password?token=YOUR_TOKEN](http://localhost:3000/reset-password)**
+**[http://localhost:3000/reset-password?token=...](http://localhost:3000/reset-password)**
 
-The page lets you enter a new password and calls `POST /auth/reset-password`.
+Configure Hostinger SMTP in `.env` (`SMTP_USER`, `SMTP_PASS`, etc.) so the email can be sent.
 
 ## Project setup
 
