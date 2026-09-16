@@ -33,6 +33,14 @@ Interactive OpenAPI docs are available when the server is running:
 
 Use **Authorize** in Swagger UI and paste an `access_token` from `/auth/login` or `/auth/signup` for protected routes.
 
+## Reset password page
+
+After calling `POST /auth/forgot-password`, open the link from the server log (or `reset_token` in the response):
+
+**[http://localhost:3000/reset-password?token=YOUR_TOKEN](http://localhost:3000/reset-password)**
+
+The page lets you enter a new password and calls `POST /auth/reset-password`.
+
 ## Project setup
 
 ```bash

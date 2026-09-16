@@ -62,9 +62,4 @@ export class ForgotPasswordResponse {
       'If an account exists for that email, a password reset link has been sent.',
   })
   message: string;
-
-  @ApiPropertyOptional({
-    description: 'Present for local testing until email delivery is wired',
-  })
-  reset_token?: string;
 }

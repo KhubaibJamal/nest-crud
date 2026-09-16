@@ -91,7 +91,7 @@ export class AuthService {
 
   async forgotPassword(
     dto: ForgotPasswordDto,
-  ): Promise<{ message: string; reset_token?: string }> {
+  ): Promise<{ message: string}> {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email.toLowerCase() },
     });
@@ -118,7 +118,7 @@ export class AuthService {
     );
 
     // Returned for local/API testing until email delivery is wired.
-    return { message, reset_token: resetToken };
+    return { message };
   }
 
   async resetPassword(dto: ResetPasswordDto): Promise<{ message: string }> {
