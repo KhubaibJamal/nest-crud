@@ -2,7 +2,6 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
-  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -11,6 +10,7 @@ import { User, UserStatus } from '../generated/prisma/index.js';
 import * as bcrypt from 'bcrypt';
 import { createHash, randomBytes } from 'node:crypto';
 import { PrismaService } from '../prisma/prisma.module.js';
+import { MailService } from '../mail/mail.module.js';
 import { ForgotPasswordDto } from './dto/forgot-password.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RefreshTokenDto } from './dto/refresh-token.dto.js';
@@ -30,16 +30,16 @@ type JwtPayload = {
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(AuthService.name);
   private readonly saltRounds = 12;
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
+    private readonly mail: MailService,
   ) { }
 
-  async signup(dto: SignupDto): Promise<AuthResponse> {
+  async signup(dto: SignupDto): Promise<{ message: string }> {
     const existing = await this.prisma.user.findUnique({
       where: { email: dto.email.toLowerCase() },
     });
@@ -58,6 +58,11 @@ export class AuthService {
     }
 
     const passwordHash = await bcrypt.hash(dto.password, this.saltRounds);
+    const rawToken = randomBytes(32).toString('hex');
+    const emailVerificationToken = this.hashToken(rawToken);
+    const emailVerificationExpires = new Date(
+      Date.now() + 24 * 60 * 60 * 1000,
+    ); // 24h
 
     const user = await this.prisma.user.create({
       data: {
@@ -66,10 +71,26 @@ export class AuthService {
         name: dto.name,
         phone: dto.phone ?? null,
         status: UserStatus.ACTIVE,
+        isEmailVerified: false,
+        emailVerificationToken,
+        emailVerificationExpires,
       },
     });
 
-    return this.issueSession(user);
+    const redirect = this.config.getOrThrow<string>('EMAIL_VERIFY_REDIRECT_URL');
+    const verifyUrl = `${redirect}?token=${rawToken}`;
+
+    try {
+      await this.mail.sendEmailVerificationEmail(user.email, verifyUrl);
+    } catch {
+      throw new BadRequestException(
+        'Account created but verification email could not be sent. Please try again later.',
+      );
+    }
+
+    return {
+      message: 'Verification link sent to email',
+    };
   }
 
   async login(dto: LoginDto): Promise<AuthResponse> {
@@ -86,12 +107,51 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
+    if (!user.isEmailVerified) {
+      throw new UnauthorizedException(
+        'Please verify your email before logging in',
+      );
+    }
+
     return this.issueSession(user);
+  }
+
+  async verifyEmail(token: string): Promise<{ message: string }> {
+    if (!token?.trim()) {
+      throw new BadRequestException('Verification token is required');
+    }
+
+    const emailVerificationToken = this.hashToken(token);
+    const user = await this.prisma.user.findFirst({
+      where: {
+        emailVerificationToken,
+        emailVerificationExpires: { gt: new Date() },
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('Invalid or expired verification token');
+    }
+
+    if (user.isEmailVerified) {
+      return { message: 'Email is already verified' };
+    }
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        isEmailVerified: true,
+        emailVerificationToken: null,
+        emailVerificationExpires: null,
+      },
+    });
+
+    return { message: 'Email verified successfully' };
   }
 
   async forgotPassword(
     dto: ForgotPasswordDto,
-  ): Promise<{ message: string}> {
+  ): Promise<{ message: string }> {
     const user = await this.prisma.user.findUnique({
       where: { email: dto.email.toLowerCase() },
     });
@@ -99,6 +159,7 @@ export class AuthService {
     const message =
       'If an account exists for that email, a password reset link has been sent.';
 
+    // Always return the same message to avoid email enumeration.
     if (!user) {
       return { message };
     }
@@ -112,12 +173,19 @@ export class AuthService {
       data: { passwordResetToken, passwordResetExpires },
     });
 
-    const redirect = this.config.get<string>('PASSWORD_RESET_REDIRECT_URL');
-    this.logger.log(
-      `Password reset for ${user.email}: ${redirect}?token=${resetToken}`,
+    const redirect = this.config.getOrThrow<string>(
+      'PASSWORD_RESET_REDIRECT_URL',
     );
+    const resetUrl = `${redirect}?token=${resetToken}`;
 
-    // Returned for local/API testing until email delivery is wired.
+    try {
+      await this.mail.sendPasswordResetEmail(user.email, resetUrl);
+    } catch {
+      throw new BadRequestException(
+        'Could not send password reset email. Please try again later.',
+      );
+    }
+
     return { message };
   }
 

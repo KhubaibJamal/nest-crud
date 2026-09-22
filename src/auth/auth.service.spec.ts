@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service.js';
 import { PrismaService } from '../prisma/prisma.module.js';
+import { MailService } from '../mail/mail.module.js';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -34,6 +35,12 @@ describe('AuthService', () => {
           useValue: {
             get: vi.fn(),
             getOrThrow: vi.fn(),
+          },
+        },
+        {
+          provide: MailService,
+          useValue: {
+            sendPasswordResetEmail: vi.fn(),
           },
         },
       ],

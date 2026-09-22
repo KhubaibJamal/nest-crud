@@ -5,12 +5,14 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOkResponse,
   ApiOperation,
+  ApiQuery,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -32,22 +34,38 @@ import { AuthGuard } from './guards/auth.guard.js';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('signup')
-  @ApiOperation({ summary: 'Create account and receive Bearer tokens' })
-  @ApiOkResponse({ type: AuthResponse })
+  @ApiOperation({
+    summary: 'Create account and send email verification link',
+  })
+  @ApiOkResponse({ type: MessageResponse })
   signup(@Body() dto: SignupDto) {
     return this.authService.signup(dto);
   }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Login with email and password' })
+  @ApiOperation({
+    summary: 'Login with email and password (email must be verified)',
+  })
   @ApiOkResponse({ type: AuthResponse })
-  @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @ApiUnauthorizedResponse({
+    description: 'Invalid credentials or email not verified',
+  })
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
+  }
+
+  @Get('verify-email')
+  @ApiOperation({
+    summary: 'Verify email using the token from the signup email',
+  })
+  @ApiQuery({ name: 'token', required: true, type: String })
+  @ApiOkResponse({ type: MessageResponse })
+  verifyEmail(@Query('token') token: string) {
+    return this.authService.verifyEmail(token);
   }
 
   @Post('forgot-password')

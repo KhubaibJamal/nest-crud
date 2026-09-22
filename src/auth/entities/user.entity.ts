@@ -52,7 +52,7 @@ export class AuthResponse {
 }
 
 export class MessageResponse {
-  @ApiProperty({ example: 'Logged out successfully' })
+  @ApiProperty({ example: 'Verification link sent to email' })
   message: string;
 }
 

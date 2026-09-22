@@ -107,6 +107,19 @@ exports.Prisma.UserScalarFieldEnum = {
   refreshTokenHash: 'refreshTokenHash',
   passwordResetToken: 'passwordResetToken',
   passwordResetExpires: 'passwordResetExpires',
+  emailVerificationToken: 'emailVerificationToken',
+  emailVerificationExpires: 'emailVerificationExpires',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  price: 'price',
+  images: 'images',
+  status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -132,7 +145,8 @@ exports.UserStatus = exports.$Enums.UserStatus = {
 };
 
 exports.Prisma.ModelName = {
-  User: 'User'
+  User: 'User',
+  Product: 'Product'
 };
 /**
  * Create the Client
@@ -182,13 +196,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum UserStatus {\n  ACTIVE\n  INACTIVE\n  BANNED\n}\n\nmodel User {\n  id                   String     @id @default(uuid()) @db.Uuid\n  email                String     @unique\n  passwordHash         String\n  name                 String\n  phone                String?    @unique\n  isEmailVerified      Boolean    @default(false)\n  isPhoneVerified      Boolean    @default(false)\n  isAdmin              Boolean    @default(false)\n  avatarUrl            String?\n  status               UserStatus @default(ACTIVE)\n  refreshTokenHash     String?\n  passwordResetToken   String?\n  passwordResetExpires DateTime?\n  createdAt            DateTime   @default(now())\n  updatedAt            DateTime   @updatedAt\n\n  @@map(\"users\")\n}\n",
-  "inlineSchemaHash": "411b0e2f0011f9fca6fb797574e0ed32a2b839770eef86235dd4ea9ab46948bb",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum UserStatus {\n  ACTIVE\n  INACTIVE\n  BANNED\n}\n\nmodel User {\n  id                       String     @id @default(uuid()) @db.Uuid\n  email                    String     @unique\n  passwordHash             String\n  name                     String\n  phone                    String?    @unique\n  isEmailVerified          Boolean    @default(false)\n  isPhoneVerified          Boolean    @default(false)\n  isAdmin                  Boolean    @default(false)\n  avatarUrl                String?\n  status                   UserStatus @default(ACTIVE)\n  refreshTokenHash         String?\n  passwordResetToken       String?\n  passwordResetExpires     DateTime?\n  emailVerificationToken   String?\n  emailVerificationExpires DateTime?\n  createdAt                DateTime   @default(now())\n  updatedAt                DateTime   @updatedAt\n\n  @@map(\"users\")\n}\n\nmodel Product {\n  id          String   @id @default(uuid()) @db.Uuid\n  name        String\n  description String\n  price       Float\n  images      String[]\n  status      Boolean  @default(true)\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  @@map(\"products\")\n}\n",
+  "inlineSchemaHash": "40fc98b5ec8f53bfbdeeefe9144203a7346e206c0483dbd731905ffac122adc1",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isEmailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"isPhoneVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"isAdmin\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"avatarUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"UserStatus\"},{\"name\":\"refreshTokenHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordResetToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordResetExpires\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"users\"}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"isEmailVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"isPhoneVerified\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"isAdmin\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"avatarUrl\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"UserStatus\"},{\"name\":\"refreshTokenHash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordResetToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"passwordResetExpires\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"emailVerificationToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"emailVerificationExpires\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"users\"},\"Product\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"price\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"images\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updatedAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":\"products\"}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),
