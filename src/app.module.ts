@@ -7,6 +7,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { MailModule } from './mail/mail.module.js';
 import { ProductModule } from './product/product.module.js';
 import { CloudinaryModule } from './cloudinary/cloudinary.module.js';
+import { UserModule } from './user/user.module.js';
 
 @Module({
   imports: [
@@ -14,10 +15,11 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module.js';
     PrismaModule,
     MailModule,
     AuthModule,
+    UserModule,
     ProductModule,
     CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
