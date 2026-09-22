@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify email</title>
+    <style>
+      :root {
+        --bg: #0f1419;
+        --panel: #1a222c;
+        --text: #e8eef4;
+        --muted: #8b9aab;
+        --accent: #3d9a7a;
+        --danger: #d96b6b;
+        --border: #2a3542;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+        background: radial-gradient(ellipse at top, #1a2a28 0%, transparent 55%), var(--bg);
+        color: var(--text);
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+      main {
+        width: 100%;
+        max-width: 420px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 32px 28px;
+      }
+      h1 { margin: 0 0 12px; font-size: 1.4rem; }
+      p { color: var(--muted); line-height: 1.5; }
+      .status {
+        margin-top: 16px;
+        padding: 12px 14px;
+        border-radius: 10px;
+        font-size: 0.95rem;
+      }
+      .status.ok {
+        background: rgba(61, 154, 122, 0.12);
+        color: #9fd9c2;
+        border: 1px solid rgba(61, 154, 122, 0.35);
+      }
+      .status.err {
+        background: rgba(217, 107, 107, 0.12);
+        color: #f0b4b4;
+        border: 1px solid rgba(217, 107, 107, 0.35);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Email verification</h1>
+      <p id="lead">Confirming your email…</p>
+      <div id="status" class="status" hidden></div>
+    </main>
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get("token");
+      const lead = document.getElementById("lead");
+      const status = document.getElementById("status");
+
+      function show(message, ok) {
+        status.hidden = false;
+        status.textContent = message;
+        status.className = "status " + (ok ? "ok" : "err");
+        lead.textContent = ok ? "You're all set." : "Verification failed.";
+      }
+
+      (async () => {
+        if (!token) {
+          show("Missing verification token. Open the full link from your email.", false);
+          return;
+        }
+
+        try {
+          const res = await fetch(
+            "/auth/verify-email?token=" + encodeURIComponent(token),
+          );
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            throw new Error(
+              typeof data.message === "string"
+                ? data.message
+                : "Verification failed",
+            );
+          }
+          show(data.message || "Email verified successfully", true);
+        } catch (err) {
+          show(err.message || "Something went wrong.", false);
+        }
+      })();
+    </script>
+  </body>
+</html>

@@ -37,9 +37,9 @@ export class AuthService {
     private readonly jwt: JwtService,
     private readonly config: ConfigService,
     private readonly mail: MailService,
-  ) {}
+  ) { }
 
-  async signup(dto: SignupDto): Promise<AuthResponse> {
+  async signup(dto: SignupDto): Promise<{ message: string }> {
     const existing = await this.prisma.user.findUnique({
       where: { email: dto.email.toLowerCase() },
     });
@@ -58,6 +58,11 @@ export class AuthService {
     }
 
     const passwordHash = await bcrypt.hash(dto.password, this.saltRounds);
+    const rawToken = randomBytes(32).toString('hex');
+    const emailVerificationToken = this.hashToken(rawToken);
+    const emailVerificationExpires = new Date(
+      Date.now() + 24 * 60 * 60 * 1000,
+    ); // 24h
 
     const user = await this.prisma.user.create({
       data: {
@@ -66,10 +71,26 @@ export class AuthService {
         name: dto.name,
         phone: dto.phone ?? null,
         status: UserStatus.ACTIVE,
+        isEmailVerified: false,
+        emailVerificationToken,
+        emailVerificationExpires,
       },
     });
 
-    return this.issueSession(user);
+    const redirect = this.config.getOrThrow<string>('EMAIL_VERIFY_REDIRECT_URL');
+    const verifyUrl = `${redirect}?token=${rawToken}`;
+
+    try {
+      await this.mail.sendEmailVerificationEmail(user.email, verifyUrl);
+    } catch {
+      throw new BadRequestException(
+        'Account created but verification email could not be sent. Please try again later.',
+      );
+    }
+
+    return {
+      message: 'Verification link sent to email',
+    };
   }
 
   async login(dto: LoginDto): Promise<AuthResponse> {
@@ -86,7 +107,46 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
+    if (!user.isEmailVerified) {
+      throw new UnauthorizedException(
+        'Please verify your email before logging in',
+      );
+    }
+
     return this.issueSession(user);
+  }
+
+  async verifyEmail(token: string): Promise<{ message: string }> {
+    if (!token?.trim()) {
+      throw new BadRequestException('Verification token is required');
+    }
+
+    const emailVerificationToken = this.hashToken(token);
+    const user = await this.prisma.user.findFirst({
+      where: {
+        emailVerificationToken,
+        emailVerificationExpires: { gt: new Date() },
+      },
+    });
+
+    if (!user) {
+      throw new BadRequestException('Invalid or expired verification token');
+    }
+
+    if (user.isEmailVerified) {
+      return { message: 'Email is already verified' };
+    }
+
+    await this.prisma.user.update({
+      where: { id: user.id },
+      data: {
+        isEmailVerified: true,
+        emailVerificationToken: null,
+        emailVerificationExpires: null,
+      },
+    });
+
+    return { message: 'Email verified successfully' };
   }
 
   async forgotPassword(

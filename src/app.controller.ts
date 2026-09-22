@@ -22,4 +22,11 @@ export class AppController {
   resetPasswordPage(@Res() res: Response) {
     return res.sendFile(join(process.cwd(), 'public', 'reset-password.html'));
   }
+
+  /** HTML page opened from the signup verification email (?token=...). */
+  @Get('verify-email')
+  @ApiExcludeEndpoint()
+  verifyEmailPage(@Res() res: Response) {
+    return res.sendFile(join(process.cwd(), 'public', 'verify-email.html'));
+  }
 }

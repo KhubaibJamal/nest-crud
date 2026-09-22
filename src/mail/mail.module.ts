@@ -91,6 +91,56 @@ export class MailService {
       throw error;
     }
   }
+
+  async sendEmailVerificationEmail(
+    to: string,
+    verifyUrl: string,
+  ): Promise<void> {
+    const from =
+      this.config.get<string>('MAIL_FROM') ??
+      this.config.getOrThrow<string>('SMTP_USER');
+
+    try {
+      await this.getTransporter().sendMail({
+        from,
+        to,
+        subject: 'Verify your email',
+        text: [
+          'Thanks for signing up.',
+          '',
+          'Open this link to verify your email (expires in 24 hours):',
+          verifyUrl,
+          '',
+          'If you did not create an account, you can ignore this email.',
+        ].join('\n'),
+        html: `
+          <div style="font-family: sans-serif; line-height: 1.5; color: #111;">
+            <h2>Verify your email</h2>
+            <p>Thanks for signing up. Please confirm your email address.</p>
+            <p>
+              <a href="${verifyUrl}" style="display:inline-block;padding:12px 18px;background:#3d9a7a;color:#fff;text-decoration:none;border-radius:8px;">
+                Verify email
+              </a>
+            </p>
+            <p style="color:#555;font-size:14px;">
+              Or copy this link:<br />
+              <a href="${verifyUrl}">${verifyUrl}</a>
+            </p>
+            <p style="color:#555;font-size:14px;">This link expires in 24 hours.</p>
+          </div>
+        `,
+      });
+
+      this.logger.log(`Verification email sent to ${to}`);
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Unknown email error';
+      this.logger.error(
+        `Failed to send verification email to ${to}: ${message}`,
+      );
+      throw error;
+    }
+  }
 }
 
 @Global()

@@ -16,7 +16,7 @@ async function bootstrap() {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('My Backend API')
     .setDescription(
-      'Authentication and application API documentation. After /auth/login or /auth/signup, the access token is applied automatically.',
+      'Authentication and application API documentation. After /auth/login, the access token is applied automatically.',
     )
     .setVersion('1.0')
     .addBearerAuth(
@@ -25,7 +25,7 @@ async function bootstrap() {
         scheme: 'bearer',
         bearerFormat: 'JWT',
         description:
-          'Auto-filled after login/signup. You can also paste an access_token manually.',
+          'Auto-filled after login. You can also paste an access_token manually.',
       },
       'access-token',
     )
@@ -62,10 +62,7 @@ async function bootstrap() {
             : args[0] && args[0].url
               ? args[0].url
               : '';
-        if (
-          requestUrl.includes('/auth/login') ||
-          requestUrl.includes('/auth/signup')
-        ) {
+        if (requestUrl.includes('/auth/login')) {
           const data = await response.clone().json();
           const token = data && data.session && data.session.access_token;
           applyToken(token);

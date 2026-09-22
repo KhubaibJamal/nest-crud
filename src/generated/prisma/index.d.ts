@@ -994,6 +994,8 @@ export namespace Prisma {
     refreshTokenHash: string | null
     passwordResetToken: string | null
     passwordResetExpires: Date | null
+    emailVerificationToken: string | null
+    emailVerificationExpires: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1012,6 +1014,8 @@ export namespace Prisma {
     refreshTokenHash: string | null
     passwordResetToken: string | null
     passwordResetExpires: Date | null
+    emailVerificationToken: string | null
+    emailVerificationExpires: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -1030,6 +1034,8 @@ export namespace Prisma {
     refreshTokenHash: number
     passwordResetToken: number
     passwordResetExpires: number
+    emailVerificationToken: number
+    emailVerificationExpires: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -1050,6 +1056,8 @@ export namespace Prisma {
     refreshTokenHash?: true
     passwordResetToken?: true
     passwordResetExpires?: true
+    emailVerificationToken?: true
+    emailVerificationExpires?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1068,6 +1076,8 @@ export namespace Prisma {
     refreshTokenHash?: true
     passwordResetToken?: true
     passwordResetExpires?: true
+    emailVerificationToken?: true
+    emailVerificationExpires?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -1086,6 +1096,8 @@ export namespace Prisma {
     refreshTokenHash?: true
     passwordResetToken?: true
     passwordResetExpires?: true
+    emailVerificationToken?: true
+    emailVerificationExpires?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -1177,6 +1189,8 @@ export namespace Prisma {
     refreshTokenHash: string | null
     passwordResetToken: string | null
     passwordResetExpires: Date | null
+    emailVerificationToken: string | null
+    emailVerificationExpires: Date | null
     createdAt: Date
     updatedAt: Date
     _count: UserCountAggregateOutputType | null
@@ -1212,6 +1226,8 @@ export namespace Prisma {
     refreshTokenHash?: boolean
     passwordResetToken?: boolean
     passwordResetExpires?: boolean
+    emailVerificationToken?: boolean
+    emailVerificationExpires?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1230,6 +1246,8 @@ export namespace Prisma {
     refreshTokenHash?: boolean
     passwordResetToken?: boolean
     passwordResetExpires?: boolean
+    emailVerificationToken?: boolean
+    emailVerificationExpires?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1248,6 +1266,8 @@ export namespace Prisma {
     refreshTokenHash?: boolean
     passwordResetToken?: boolean
     passwordResetExpires?: boolean
+    emailVerificationToken?: boolean
+    emailVerificationExpires?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
@@ -1266,11 +1286,13 @@ export namespace Prisma {
     refreshTokenHash?: boolean
     passwordResetToken?: boolean
     passwordResetExpires?: boolean
+    emailVerificationToken?: boolean
+    emailVerificationExpires?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "passwordHash" | "name" | "phone" | "isEmailVerified" | "isPhoneVerified" | "isAdmin" | "avatarUrl" | "status" | "refreshTokenHash" | "passwordResetToken" | "passwordResetExpires" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "passwordHash" | "name" | "phone" | "isEmailVerified" | "isPhoneVerified" | "isAdmin" | "avatarUrl" | "status" | "refreshTokenHash" | "passwordResetToken" | "passwordResetExpires" | "emailVerificationToken" | "emailVerificationExpires" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
@@ -1289,6 +1311,8 @@ export namespace Prisma {
       refreshTokenHash: string | null
       passwordResetToken: string | null
       passwordResetExpires: Date | null
+      emailVerificationToken: string | null
+      emailVerificationExpires: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["user"]>
@@ -1727,6 +1751,8 @@ export namespace Prisma {
     readonly refreshTokenHash: FieldRef<"User", 'String'>
     readonly passwordResetToken: FieldRef<"User", 'String'>
     readonly passwordResetExpires: FieldRef<"User", 'DateTime'>
+    readonly emailVerificationToken: FieldRef<"User", 'String'>
+    readonly emailVerificationExpires: FieldRef<"User", 'DateTime'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
@@ -3187,6 +3213,8 @@ export namespace Prisma {
     refreshTokenHash: 'refreshTokenHash',
     passwordResetToken: 'passwordResetToken',
     passwordResetExpires: 'passwordResetExpires',
+    emailVerificationToken: 'emailVerificationToken',
+    emailVerificationExpires: 'emailVerificationExpires',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -3334,6 +3362,8 @@ export namespace Prisma {
     refreshTokenHash?: StringNullableFilter<"User"> | string | null
     passwordResetToken?: StringNullableFilter<"User"> | string | null
     passwordResetExpires?: DateTimeNullableFilter<"User"> | Date | string | null
+    emailVerificationToken?: StringNullableFilter<"User"> | string | null
+    emailVerificationExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
   }
@@ -3352,6 +3382,8 @@ export namespace Prisma {
     refreshTokenHash?: SortOrderInput | SortOrder
     passwordResetToken?: SortOrderInput | SortOrder
     passwordResetExpires?: SortOrderInput | SortOrder
+    emailVerificationToken?: SortOrderInput | SortOrder
+    emailVerificationExpires?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -3373,6 +3405,8 @@ export namespace Prisma {
     refreshTokenHash?: StringNullableFilter<"User"> | string | null
     passwordResetToken?: StringNullableFilter<"User"> | string | null
     passwordResetExpires?: DateTimeNullableFilter<"User"> | Date | string | null
+    emailVerificationToken?: StringNullableFilter<"User"> | string | null
+    emailVerificationExpires?: DateTimeNullableFilter<"User"> | Date | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
   }, "id" | "email" | "phone">
@@ -3391,6 +3425,8 @@ export namespace Prisma {
     refreshTokenHash?: SortOrderInput | SortOrder
     passwordResetToken?: SortOrderInput | SortOrder
     passwordResetExpires?: SortOrderInput | SortOrder
+    emailVerificationToken?: SortOrderInput | SortOrder
+    emailVerificationExpires?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
@@ -3415,6 +3451,8 @@ export namespace Prisma {
     refreshTokenHash?: StringNullableWithAggregatesFilter<"User"> | string | null
     passwordResetToken?: StringNullableWithAggregatesFilter<"User"> | string | null
     passwordResetExpires?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    emailVerificationToken?: StringNullableWithAggregatesFilter<"User"> | string | null
+    emailVerificationExpires?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
@@ -3502,6 +3540,8 @@ export namespace Prisma {
     refreshTokenHash?: string | null
     passwordResetToken?: string | null
     passwordResetExpires?: Date | string | null
+    emailVerificationToken?: string | null
+    emailVerificationExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -3520,6 +3560,8 @@ export namespace Prisma {
     refreshTokenHash?: string | null
     passwordResetToken?: string | null
     passwordResetExpires?: Date | string | null
+    emailVerificationToken?: string | null
+    emailVerificationExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -3538,6 +3580,8 @@ export namespace Prisma {
     refreshTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
     passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
     passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerificationExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -3556,6 +3600,8 @@ export namespace Prisma {
     refreshTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
     passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
     passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerificationExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -3574,6 +3620,8 @@ export namespace Prisma {
     refreshTokenHash?: string | null
     passwordResetToken?: string | null
     passwordResetExpires?: Date | string | null
+    emailVerificationToken?: string | null
+    emailVerificationExpires?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -3592,6 +3640,8 @@ export namespace Prisma {
     refreshTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
     passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
     passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerificationExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -3610,6 +3660,8 @@ export namespace Prisma {
     refreshTokenHash?: NullableStringFieldUpdateOperationsInput | string | null
     passwordResetToken?: NullableStringFieldUpdateOperationsInput | string | null
     passwordResetExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailVerificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerificationExpires?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -3786,6 +3838,8 @@ export namespace Prisma {
     refreshTokenHash?: SortOrder
     passwordResetToken?: SortOrder
     passwordResetExpires?: SortOrder
+    emailVerificationToken?: SortOrder
+    emailVerificationExpires?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -3804,6 +3858,8 @@ export namespace Prisma {
     refreshTokenHash?: SortOrder
     passwordResetToken?: SortOrder
     passwordResetExpires?: SortOrder
+    emailVerificationToken?: SortOrder
+    emailVerificationExpires?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -3822,6 +3878,8 @@ export namespace Prisma {
     refreshTokenHash?: SortOrder
     passwordResetToken?: SortOrder
     passwordResetExpires?: SortOrder
+    emailVerificationToken?: SortOrder
+    emailVerificationExpires?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
