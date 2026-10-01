@@ -33,6 +33,10 @@ model User {
   createdAt            DateTime   @default(now())
   updatedAt            DateTime   @updatedAt
 
+  conversationsAsP1 Conversation[] @relation("ConversationP1")
+  conversationsAsP2 Conversation[] @relation("ConversationP2")
+  sentMessages      Message[]      @relation("MessageSender")
+
   @@map("users")
 }
 
@@ -47,4 +51,37 @@ model Product {
   updatedAt   DateTime @updatedAt
 
   @@map("products")
+}
+
+model Conversation {
+  id             String   @id @default(uuid()) @db.Uuid
+  // participant1Id is always the lexicographically smaller UUID
+  participant1Id String   @db.Uuid
+  participant2Id String   @db.Uuid
+  lastMessageAt  DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  participant1 User      @relation("ConversationP1", fields: [participant1Id], references: [id])
+  participant2 User      @relation("ConversationP2", fields: [participant2Id], references: [id])
+  messages     Message[]
+
+  @@unique([participant1Id, participant2Id])
+  @@index([participant1Id, lastMessageAt(sort: Desc)])
+  @@index([participant2Id, lastMessageAt(sort: Desc)])
+  @@map("conversations")
+}
+
+model Message {
+  id             String       @id @default(uuid()) @db.Uuid
+  conversationId String       @db.Uuid
+  senderId       String       @db.Uuid
+  content        String
+  createdAt      DateTime     @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id])
+  sender       User         @relation("MessageSender", fields: [senderId], references: [id])
+
+  @@index([conversationId, createdAt(sort: Desc)])
+  @@map("messages")
 }

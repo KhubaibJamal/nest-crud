@@ -90,6 +90,8 @@ async function bootstrap() {
 `,
   });
 
+  app.enableCors({ origin: '*' });
+
   const port = process.env.PORT ?? 3000;
   await app.listen(port);
   console.log(`Swagger docs: http://localhost:${port}/api/docs`);

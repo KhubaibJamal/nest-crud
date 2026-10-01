@@ -152,6 +152,23 @@ exports.Prisma.ProductScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ConversationScalarFieldEnum = {
+  id: 'id',
+  participant1Id: 'participant1Id',
+  participant2Id: 'participant2Id',
+  lastMessageAt: 'lastMessageAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.MessageScalarFieldEnum = {
+  id: 'id',
+  conversationId: 'conversationId',
+  senderId: 'senderId',
+  content: 'content',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -174,7 +191,9 @@ exports.UserStatus = exports.$Enums.UserStatus = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  Product: 'Product'
+  Product: 'Product',
+  Conversation: 'Conversation',
+  Message: 'Message'
 };
 
 /**

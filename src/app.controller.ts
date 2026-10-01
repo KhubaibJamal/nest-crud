@@ -29,4 +29,11 @@ export class AppController {
   verifyEmailPage(@Res() res: Response) {
     return res.sendFile(join(process.cwd(), 'public', 'verify-email.html'));
   }
+
+  /** Interactive chat tester page. */
+  @Get('chat-test')
+  @ApiExcludeEndpoint()
+  chatTestPage(@Res() res: Response) {
+    return res.sendFile(join(process.cwd(), 'public', 'chat.html'));
+  }
 }

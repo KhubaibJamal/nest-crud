@@ -8,6 +8,7 @@ import { MailModule } from './mail/mail.module.js';
 import { ProductModule } from './product/product.module.js';
 import { CloudinaryModule } from './cloudinary/cloudinary.module.js';
 import { UserModule } from './user/user.module.js';
+import { ChatModule } from './chat/chat.module.js';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserModule } from './user/user.module.js';
     UserModule,
     ProductModule,
     CloudinaryModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],
