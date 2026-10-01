@@ -7,6 +7,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -17,9 +18,12 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
+import type { AuthUser } from '../auth/entities/user.entity.js';
 import { AdminGuard } from '../auth/guards/admin.guard.js';
 import { AuthGuard } from '../auth/guards/auth.guard.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
+import { FindUsersQueryDto } from './dto/find-users-query.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { UserEntity } from './entities/user.entity.js';
 import { UserService } from './user.service.js';
@@ -30,7 +34,7 @@ import { UserService } from './user.service.js';
 @ApiUnauthorizedResponse({ description: 'Missing or invalid Bearer token' })
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   @UseGuards(AdminGuard)
@@ -42,12 +46,17 @@ export class UserController {
   }
 
   @Get()
-  @UseGuards(AdminGuard)
-  @ApiOperation({ summary: 'List all users (admin only)' })
+  @ApiOperation({
+    summary: 'List users available to chat with',
+    description:
+      'Returns non-admin users only. Always excludes the logged-in user and all admins. Optional search by name, email, or phone.',
+  })
   @ApiOkResponse({ type: [UserEntity] })
-  @ApiForbiddenResponse({ description: 'Admin access required' })
-  findAllUsers() {
-    return this.userService.findAllUsers();
+  findAllUsers(
+    @CurrentUser() user: AuthUser,
+    @Query() query: FindUsersQueryDto,
+  ) {
+    return this.userService.findAllUsers(user.id, query.search);
   }
 
   @Get(':id')

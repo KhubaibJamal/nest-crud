@@ -52,8 +52,32 @@ export class UserService {
     });
   }
 
-  async findAllUsers(): Promise<UserEntity[]> {
+  /**
+   * Directory list for chat / people picker.
+   * - Never returns the caller
+   * - Never returns admins (admin or regular user alike)
+   * - Optional search on name, email, phone
+   */
+  async findAllUsers(
+    currentUserId: string,
+    search?: string,
+  ): Promise<UserEntity[]> {
+    const q = search?.trim();
+
     return this.prisma.user.findMany({
+      where: {
+        id: { not: currentUserId },
+        isAdmin: false,
+        ...(q
+          ? {
+              OR: [
+                { name: { contains: q, mode: 'insensitive' } },
+                { email: { contains: q, mode: 'insensitive' } },
+                { phone: { contains: q, mode: 'insensitive' } },
+              ],
+            }
+          : {}),
+      },
       orderBy: { createdAt: 'desc' },
       select: userPublicSelect,
     });
