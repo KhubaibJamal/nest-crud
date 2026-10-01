@@ -19,6 +19,7 @@ import type { AuthUser } from '../auth/entities/user.entity.js';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 import { ChatService } from './chat.service.js';
 import { CreateConversationDto } from './dto/create-conversation.dto.js';
+import { InboxQueryDto } from './dto/inbox-query.dto.js';
 import { PaginationDto } from './dto/pagination.dto.js';
 import {
   ConversationListResponse,
@@ -42,13 +43,22 @@ export class ChatController {
   }
 
   @Get('conversations')
-  @ApiOperation({ summary: 'Get my inbox (paginated, newest first)' })
+  @ApiOperation({
+    summary: 'Get my inbox (paginated, newest first)',
+    description:
+      'Optional search filters by the other participant name, email, or phone.',
+  })
   @ApiOkResponse({ type: ConversationListResponse })
   getInbox(
     @CurrentUser() user: AuthUser,
-    @Query() query: PaginationDto,
+    @Query() query: InboxQueryDto,
   ): Promise<ConversationListResponse> {
-    return this.chatService.getInbox(user.id, query.page, query.limit);
+    return this.chatService.getInbox(
+      user.id,
+      query.page,
+      query.limit,
+      query.search,
+    );
   }
 
   @Get('conversations/:id/messages')

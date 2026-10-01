@@ -57,9 +57,41 @@ export class ChatService {
     userId: string,
     page: number,
     limit: number,
+    search?: string,
   ): Promise<ConversationListResponse> {
+    const q = search?.trim();
+    const otherUserMatch = q
+      ? {
+          OR: [
+            { name: { contains: q, mode: 'insensitive' as const } },
+            { email: { contains: q, mode: 'insensitive' as const } },
+            { phone: { contains: q, mode: 'insensitive' as const } },
+          ],
+        }
+      : undefined;
+
     const where = {
-      OR: [{ participant1Id: userId }, { participant2Id: userId }],
+      AND: [
+        {
+          OR: [{ participant1Id: userId }, { participant2Id: userId }],
+        },
+        ...(otherUserMatch
+          ? [
+              {
+                OR: [
+                  {
+                    participant1Id: userId,
+                    participant2: otherUserMatch,
+                  },
+                  {
+                    participant2Id: userId,
+                    participant1: otherUserMatch,
+                  },
+                ],
+              },
+            ]
+          : []),
+      ],
     };
 
     const [total, conversations] = await Promise.all([
