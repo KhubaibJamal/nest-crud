@@ -16,9 +16,26 @@ async function bootstrap() {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('My Backend API')
     .setDescription(
-      'Authentication and application API documentation. After /auth/login, the access token is applied automatically.',
+      [
+        'Authentication and application API documentation.',
+        'After `/auth/login`, the access token is applied automatically in Swagger UI.',
+        '',
+        '## Real-time chat (Socket.IO)',
+        '',
+        'Chat messaging uses **Socket.IO**, not REST. See the **`chat-socket`** tag',
+        '(`GET /chat/socket/info`) for the full connect / emit / listen contract.',
+        '',
+        '- Connect: `io(BASE_URL, { auth: { token: access_token }, transports: [\'websocket\'] })`',
+        '- Client → server event: `send_message` `{ receiverId, content }`',
+        '- Server → client events: `new_message`, `error`',
+        '- HTML tester: `/chat-test`',
+        '',
+        'Related REST under the **`chat`** tag: inbox, messages, find-or-create conversation.',
+      ].join('\n'),
     )
     .setVersion('1.0')
+    .addTag('chat-socket', 'Socket.IO real-time chat protocol (docs reference)')
+    .addTag('chat', 'Chat REST: conversations & messages')
     .addBearerAuth(
       {
         type: 'http',
