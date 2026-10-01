@@ -56,11 +56,14 @@ export class UserService {
    * Directory list for chat / people picker.
    * - Never returns the caller
    * - Never returns admins (admin or regular user alike)
+   * - Regular users: only verified-email accounts
+   * - Admins: verified and unverified
    * - Optional search on name, email, phone
    */
   async findAllUsers(
     currentUserId: string,
     search?: string,
+    isAdmin = false,
   ): Promise<UserEntity[]> {
     const q = search?.trim();
 
@@ -68,6 +71,7 @@ export class UserService {
       where: {
         id: { not: currentUserId },
         isAdmin: false,
+        ...(!isAdmin ? { isEmailVerified: true } : {}),
         ...(q
           ? {
               OR: [

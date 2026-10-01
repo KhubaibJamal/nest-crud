@@ -49,14 +49,18 @@ export class UserController {
   @ApiOperation({
     summary: 'List users available to chat with',
     description:
-      'Returns non-admin users only. Always excludes the logged-in user and all admins. Optional search by name, email, or phone.',
+      'Excludes the logged-in user and all admins. Regular users only see email-verified accounts; admins see verified and unverified. Optional search by name, email, or phone.',
   })
   @ApiOkResponse({ type: [UserEntity] })
   findAllUsers(
     @CurrentUser() user: AuthUser,
     @Query() query: FindUsersQueryDto,
   ) {
-    return this.userService.findAllUsers(user.id, query.search);
+    return this.userService.findAllUsers(
+      user.id,
+      query.search,
+      Boolean(user.isAdmin),
+    );
   }
 
   @Get(':id')
